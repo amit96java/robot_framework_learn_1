@@ -1,0 +1,102 @@
+module adtran-cloud-platform-profiles-object-properties {
+  namespace "http://www.adtran.com/ns/yang/"
+      + "adtran-cloud-platform-profiles-object-properties";
+  prefix adtn-cld-pfrm-prof-obj-prop;
+
+  import adtran-cloud-platform-profiles {
+    prefix adtn-cld-pfrm-prof;
+  }
+
+  organization
+    "ADTRAN, Inc.";
+
+  contact
+    "<http://www.adtran.com/>";
+
+  description
+    "This module contains a collection of YANG definitions used to
+     manage profiles that define additional properties for objects,
+     e.g,, devices and interfaces.
+
+     Copyright (c) 2022 ADTRAN, Inc.  All rights reserved.";
+
+  revision 2022-09-28 {
+    description
+      "Initial revision.";
+    reference
+      "None.";
+  }
+
+  identity object-name-modifier-profile-type {
+    base adtn-cld-pfrm-prof:profile-type;
+    description
+      "Identifier for object-name-modifier-profile-type.";
+  }
+
+
+  augment "/adtn-cld-pfrm-prof:profiles/"
+        + "adtn-cld-pfrm-prof:profile/"
+        + "adtn-cld-pfrm-prof:contents" {
+
+    description
+      "Contents of an object properties profile.";
+
+    case tree-view-display-name {
+      when "adtn-cld-pfrm-prof:type = "
+         + "'adtn-cld-pfrm-prof-obj-prop:"
+         + "object-name-modifier-profile-type'" {
+        description
+          "Use when profile type is
+           'object-name-modifier-profile-type'.";
+      }
+
+      container object-name-modifier-parameters {
+        description
+          "Object modifier parameters.";
+
+        leaf tree-view-display-name {
+          type string;
+          mandatory true;
+          description
+            "This string defines the display name used for
+            objects in a tree view. The string supports
+            variables 'object_parameters.onu_id',
+            'object_parameters.serial_number',
+            'interface_type', 'interface_id.port',
+            'interface_id.slot'. Variables evaluated
+            to numbers(i.e. onu, port, slot) can be padded
+            with zeros by placing a % sign after the variable
+            name followed by a single digit representing the
+            length of the value. A % sign will be ignored
+            if the variable does not evaluate to a number.
+            These variables, when used, start and end with $.
+            These variables are just plain variables and no
+            expressions are supported. Static strings can be
+            part of the pattern. if used  along with variables.
+            All object parameters are supported and these are
+            some Examples.
+            Example Patterns for Device are:
+              1) ONU-$object_parameters.onu_id$
+              2) ONU-$object_parameters.onu_id%2$
+              3) ONU#$object_parameters.onu_id$
+              4) ONU#$object_parameters.onu_id%2$
+              5) ONU-$object_parameters.serial_number$
+              6) ONU#$object_parameters.serial_number$
+
+            Example pattern for Interface are:
+              1) $interface_type$-$interface_id.port$
+              2) $interface_type$-$interface_id.port%2$
+              3) $interface_type$#$interface_id.slot$
+              4) $interface_type$#$interface_id.slot%2$
+
+            Incorrect Patterns:
+              1) ONU-$x$
+              2) $interface_type%2$/$interface_id.port$
+
+            This pattern is limited to the character
+            set usable when creating objects.";
+        }
+      }
+    }
+  }
+}
